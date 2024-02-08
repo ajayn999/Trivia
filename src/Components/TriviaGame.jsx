@@ -6,7 +6,7 @@ function TriviaGame() {
   const [selectedOption, setSelectedOption] = useState("");
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [answerResult, setAnswerResult] = useState("");
-  const [totalQuestionsServed, setTotalQuestionsServed] = useState(0); // Track total questions served
+  const [totalQuestionsServed, setTotalQuestionsServed] = useState(0); 
   const [totalCorrect, setTotalCorrect] = useState(0);
   const [totalIncorrect, setTotalIncorrect] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,43 +14,43 @@ function TriviaGame() {
 
 
   useEffect(() => {
+    const fetchQuestion = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch("https://opentdb.com/api.php?amount=1");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.results && data.results.length > 0) {
+            const questionData = data.results[0];
+            setQuestion(questionData.question);
+            setOptions(
+              [
+                ...questionData.incorrect_answers,
+                questionData.correct_answer,
+              ].sort(() => Math.random() - 0.5)
+            );
+            setCorrectAnswer(questionData.correct_answer);
+            setTotalQuestionsServed(totalQuestionsServed + 1);
+          } else {
+            throw new Error("No questions found");
+          }
+        } else if (response.status === 429) {
+          console.error("Rate limit exceeded. Please wait and try again.");
+        } else {
+          throw new Error("Failed to fetch question");
+        }
+      } catch (error) {
+        console.error("Error fetching question:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
   
       fetchQuestion();
 
   }, []);
   
 
-  const fetchQuestion = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("https://opentdb.com/api.php?amount=1");
-      if (response.ok) {
-        const data = await response.json();
-        if (data.results && data.results.length > 0) {
-          const questionData = data.results[0];
-          setQuestion(questionData.question);
-          setOptions(
-            [
-              ...questionData.incorrect_answers,
-              questionData.correct_answer,
-            ].sort(() => Math.random() - 0.5)
-          );
-          setCorrectAnswer(questionData.correct_answer);
-          setTotalQuestionsServed(totalQuestionsServed + 1);
-        } else {
-          throw new Error("No questions found");
-        }
-      } else if (response.status === 429) {
-        console.error("Rate limit exceeded. Please wait and try again.");
-      } else {
-        throw new Error("Failed to fetch question");
-      }
-    } catch (error) {
-      console.error("Error fetching question:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSubmit = () => {
     if (selectedOption === correctAnswer) {
