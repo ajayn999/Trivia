@@ -14,14 +14,10 @@ function TriviaGame() {
 
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchQuestion();
-    };
   
-    fetchData();
-  
+      fetchQuestion();
 
-  }, [currentIndex]);
+  }, []);
   
 
   const fetchQuestion = async () => {
