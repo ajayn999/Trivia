@@ -12,9 +12,17 @@ function TriviaGame() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
+
   useEffect(() => {
-    fetchQuestion();
+    const fetchData = async () => {
+      await fetchQuestion();
+    };
+  
+    fetchData();
+  
+
   }, [currentIndex]);
+  
 
   const fetchQuestion = async () => {
     setLoading(true);
